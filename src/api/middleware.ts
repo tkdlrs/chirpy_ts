@@ -18,12 +18,12 @@ export function middlewareLogResponses(
     //
     next();
 }
-
 //
-export function middlewareMetricsInc(req: Request, res: Response, next: NextFunction) {
-    res.on("finish", () => {
-        config.fileserverHits++;
-    })
-    //
+export function middlewareMetricsInc(
+    _: Request,
+    __: Response,
+    next: NextFunction,
+) {
+    config.fileServerHits++;
     next();
 }
