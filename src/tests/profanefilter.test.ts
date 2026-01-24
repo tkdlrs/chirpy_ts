@@ -1,4 +1,4 @@
-import { profaneFilter } from "./chirps.js";
+import { profaneFilter } from "../api/chirps.js";
 
 type Test = { input: string, expected: string }
 type Tests = Test[];
