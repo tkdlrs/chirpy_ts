@@ -1,7 +1,6 @@
 import type { Request, Response } from "express";
-import { respondWithError, respondWithJSON } from "./json.js";
-
-
+import { respondWithJSON } from "./json.js";
+//
 export async function handlerChirpsValidate(req: Request, res: Response) {
     type parameters = {
         body: string;
@@ -11,8 +10,7 @@ export async function handlerChirpsValidate(req: Request, res: Response) {
     //
     const maxChirpLength = 140;
     if (params.body.length > maxChirpLength) {
-        respondWithError(res, 400, "Chirp is too long");
-        return;
+        throw new Error("Chirp is too long");
     }
     // 'swears' check. smh 
     params.body = profaneFilter(params.body);
@@ -21,22 +19,18 @@ export async function handlerChirpsValidate(req: Request, res: Response) {
         cleanedBody: params.body
     });
 }
-
 //
 export function profaneFilter(strToFilter: string): string {
-    const arrBodyWords: string[] = strToFilter.split(" ");
+    const arrWords: string[] = strToFilter.split(" ");
     const profaneWords = ["KeRfuFfLe", "Sharbert", "Fornax"].map(item => item.toLowerCase());
-    let cleanedString = "";
     //
-    for (let i = 0; i < arrBodyWords.length; i++) {
-        const word = (i === arrBodyWords.length - 1) ? arrBodyWords[i] : `${arrBodyWords[i]} `;
-        // skip the ones that aren't included.
-        if (!profaneWords.includes(word.trim().toLowerCase())) {
-            cleanedString += word;
-            continue;
+    for (let i = 0; i < arrWords.length; i++) {
+        const word = arrWords[i];
+        const loweredWord = (word.toLowerCase());
+        if (profaneWords.includes(loweredWord)) {
+            arrWords[i] = "****";
         }
-        cleanedString += (i === arrBodyWords.length) ? `****` : `**** `;
     }
     //
-    return cleanedString;
+    return arrWords.join(" ");
 }
