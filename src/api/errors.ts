@@ -5,13 +5,13 @@ export class BadRequestError extends Error {
     }
 }
 // 401
-export class ValidationError extends Error {
+export class UserNotAuthenticatedError extends Error {
     constructor(message: string) {
         super(message);
     }
 }
 // 403
-export class ForbiddenError extends Error {
+export class UserForbiddenError extends Error {
     constructor(message: string) {
         super(message);
     }

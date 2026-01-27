@@ -11,7 +11,9 @@ export async function handlerChirpsValidate(req: Request, res: Response) {
     //
     const maxChirpLength = 140;
     if (params.body.length > maxChirpLength) {
-        throw new BadRequestError(`Chirp is too long. Max length is ${maxChirpLength}`);
+        throw new BadRequestError(
+            `Chirp is too long. Max length is ${maxChirpLength}`,
+        );
     }
     // 'swears' check. smh 
     params.body = profaneFilter(params.body);
@@ -35,3 +37,4 @@ export function profaneFilter(strToFilter: string): string {
     //
     return arrWords.join(" ");
 }
+//
