@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from "express";
 import { config } from "../config.js"
 import { respondWithError } from "./json.js";
+import { BadRequestError } from "./errors.js";
 
 export function middlewareLogResponses(
     req: Request,
@@ -40,6 +41,9 @@ export function errorMiddleWare(
     //
     console.log(err.message);
     //
+    if (err instanceof BadRequestError) {
+        return respondWithError(res, 400, err.message);
+    }
     respondWithError(res, statusCode, message);
 }
 //
