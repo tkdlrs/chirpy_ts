@@ -1,26 +1,50 @@
 import type { Request, Response } from "express";
 import { respondWithJSON } from "./json.js";
 import { BadRequestError } from "./errors.js";
+import { createChirp } from "../db/queries/chirps.js";
 //
-export async function handlerChirpsValidate(req: Request, res: Response) {
+export async function handlerChirpsCreate(req: Request, res: Response) {
     type parameters = {
         body: string;
-    };
+        userId: string;
+    }
     //
     const params: parameters = req.body;
+    if (!params.body || !params.userId) {
+        throw new BadRequestError("Missing required fields");
+    }
+    //
+    const cleanedBody: string = chirpsValidate(params.body);
+    //
+    const chirp = await createChirp({
+        body: cleanedBody,
+        userId: params.userId
+    })
+    if (!chirp) {
+        throw new Error("Couldn't create chirp");
+    }
+    //
+    respondWithJSON(res, 201, {
+        id: chirp.id,
+        createdAt: chirp.createdAt,
+        updatedAt: chirp.updatedAt,
+        body: chirp.body,
+        userId: chirp.userId,
+    });
+}
+//
+export function chirpsValidate(body: string) {
     //
     const maxChirpLength = 140;
-    if (params.body.length > maxChirpLength) {
+    if (body.length > maxChirpLength) {
         throw new BadRequestError(
             `Chirp is too long. Max length is ${maxChirpLength}`,
         );
     }
     // 'swears' check. smh 
-    params.body = profaneFilter(params.body);
+    body = profaneFilter(body);
     // 
-    respondWithJSON(res, 200, {
-        cleanedBody: params.body
-    });
+    return body;
 }
 //
 export function profaneFilter(strToFilter: string): string {
