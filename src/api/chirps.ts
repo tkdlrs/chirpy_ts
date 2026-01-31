@@ -1,7 +1,8 @@
 import type { Request, Response } from "express";
+//
 import { respondWithJSON } from "./json.js";
-import { BadRequestError } from "./errors.js";
 import { createChirp } from "../db/queries/chirps.js";
+import { BadRequestError } from "./errors.js";
 //
 export async function handlerChirpsCreate(req: Request, res: Response) {
     type parameters = {
@@ -10,14 +11,13 @@ export async function handlerChirpsCreate(req: Request, res: Response) {
     }
     //
     const params: parameters = req.body;
+    const cleaned = validateChirp(params.body);
     if (!params.body || !params.userId) {
         throw new BadRequestError("Missing required fields");
     }
     //
-    const cleanedBody: string = chirpsValidate(params.body);
-    //
     const chirp = await createChirp({
-        body: cleanedBody,
+        body: cleaned,
         userId: params.userId
     })
     if (!chirp) {
@@ -33,32 +33,29 @@ export async function handlerChirpsCreate(req: Request, res: Response) {
     });
 }
 //
-export function chirpsValidate(body: string) {
-    //
+export function validateChirp(body: string) {
     const maxChirpLength = 140;
     if (body.length > maxChirpLength) {
         throw new BadRequestError(
             `Chirp is too long. Max length is ${maxChirpLength}`,
         );
     }
-    // 'swears' check. smh 
-    body = profaneFilter(body);
-    // 
-    return body;
+    //
+    return getCleanedBody(body);
 }
 //
-export function profaneFilter(strToFilter: string): string {
-    const arrWords: string[] = strToFilter.split(" ");
+export function getCleanedBody(strToFilter: string): string {
+    const words: string[] = strToFilter.split(" ");
     const profaneWords = ["KeRfuFfLe", "Sharbert", "Fornax"].map(item => item.toLowerCase());
     //
-    for (let i = 0; i < arrWords.length; i++) {
-        const word = arrWords[i];
+    for (let i = 0; i < words.length; i++) {
+        const word = words[i];
         const loweredWord = (word.toLowerCase());
         if (profaneWords.includes(loweredWord)) {
-            arrWords[i] = "****";
+            words[i] = "****";
         }
     }
     //
-    return arrWords.join(" ");
+    return words.join(" ");
 }
 //

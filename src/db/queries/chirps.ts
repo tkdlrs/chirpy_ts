@@ -3,12 +3,9 @@ import { chirps, NewChirp } from "../schema.js";
 
 //
 export async function createChirp(chirp: NewChirp) {
-    const [result] = await db
+    const [rows] = await db
         .insert(chirps)
-        .values({
-            body: chirp.body,
-            userId: chirp.userId,
-        })
+        .values(chirp)
         .returning();
-    return result;
+    return rows;
 }

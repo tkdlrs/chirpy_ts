@@ -33,12 +33,12 @@ app.use("/app", middlewareMetricsInc, express.static("./src/app"));
 app.get("/api/healthz", (req, res, next) => {
     Promise.resolve(handlerReadiness(req, res)).catch(next);
 });
+app.post("/api/users", (req, res, next) => {
+    Promise.resolve(handlerUsersCreate(req, res)).catch(next);
+})
 app.post("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerChirpsCreate(req, res)).catch(next);
 });
-app.post("/api/users", (req, res, next) => {
-    Promise.resolve(handlerUsersCreate(req, res).catch(next));
-})
 
 // admin
 app.get("/admin/metrics", (req, res, next) => {
