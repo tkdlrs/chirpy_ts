@@ -4,15 +4,6 @@ import { respondWithJSON } from "./json.js";
 import { createChirp, getChirps } from "../db/queries/chirps.js";
 import { BadRequestError } from "./errors.js";
 //
-export async function handlerChirpsIndex(req: Request, res: Response) {
-    try {
-        const chirps = await getChirps();
-        return respondWithJSON(res, 200, chirps);
-    } catch (err) {
-        throw new Error("Issue getting chirps")
-    }
-}
-//
 export async function handlerChirpsCreate(req: Request, res: Response) {
     type parameters = {
         body: string;
@@ -68,3 +59,11 @@ export function getCleanedBody(strToFilter: string): string {
     return words.join(" ");
 }
 //
+export async function handlerChirpsIndex(_: Request, res: Response) {
+    try {
+        const chirps = await getChirps();
+        return respondWithJSON(res, 200, chirps);
+    } catch (err) {
+        throw new Error("Issue getting chirps")
+    }
+}
