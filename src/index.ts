@@ -13,7 +13,7 @@ import {
 import { handlerReadiness } from "./api/readiness.js";
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
-import { handlerChirpsCreate } from "./api/chirps.js";
+import { handlerChirpsCreate, handlerChirpsIndex } from "./api/chirps.js";
 import { handlerUsersCreate } from "./api/users.js";
 //
 import { config } from "./config.js";
@@ -39,6 +39,9 @@ app.post("/api/users", (req, res, next) => {
 app.post("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerChirpsCreate(req, res)).catch(next);
 });
+app.get("/api/chirps", (req, res, next) => {
+    Promise.resolve(handlerChirpsIndex(req, res)).catch(next);
+})
 
 // admin
 app.get("/admin/metrics", (req, res, next) => {

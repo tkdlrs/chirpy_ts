@@ -1,8 +1,17 @@
 import type { Request, Response } from "express";
 //
 import { respondWithJSON } from "./json.js";
-import { createChirp } from "../db/queries/chirps.js";
+import { createChirp, getChirps } from "../db/queries/chirps.js";
 import { BadRequestError } from "./errors.js";
+//
+export async function handlerChirpsIndex(req: Request, res: Response) {
+    try {
+        const chirps = await getChirps();
+        return respondWithJSON(res, 200, chirps);
+    } catch (err) {
+        throw new Error("Issue getting chirps")
+    }
+}
 //
 export async function handlerChirpsCreate(req: Request, res: Response) {
     type parameters = {
