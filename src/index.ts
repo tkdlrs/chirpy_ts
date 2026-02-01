@@ -13,7 +13,7 @@ import {
 import { handlerReadiness } from "./api/readiness.js";
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
-import { handlerChirpsCreate, handlerChirpsIndex } from "./api/chirps.js";
+import { handlerChirpsCreate, handlerChirpsIndex, handlerChirpsShow } from "./api/chirps.js";
 import { handlerUsersCreate } from "./api/users.js";
 //
 import { config } from "./config.js";
@@ -26,24 +26,30 @@ const app = express();
 app.use(middlewareLogResponses);
 app.use(express.json());
 
-// app
+/* APP */
 app.use("/app", middlewareMetricsInc, express.static("./src/app"));
 
-// api
+/* API */
+//
 app.get("/api/healthz", (req, res, next) => {
     Promise.resolve(handlerReadiness(req, res)).catch(next);
 });
+// Users
 app.post("/api/users", (req, res, next) => {
     Promise.resolve(handlerUsersCreate(req, res)).catch(next);
 })
+// Chirps 
 app.post("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerChirpsCreate(req, res)).catch(next);
 });
+app.get("/api/chirps/:chirpId", (req, res, next) => {
+    Promise.resolve(handlerChirpsShow(req, res)).catch(next);
+});
 app.get("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerChirpsIndex(req, res)).catch(next);
-})
+});
 
-// admin
+/* Admin */
 app.get("/admin/metrics", (req, res, next) => {
     Promise.resolve(handlerMetrics(req, res)).catch(next);
 });
