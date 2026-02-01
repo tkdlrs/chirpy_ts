@@ -15,11 +15,11 @@ export async function getChirps() {
     return db.select().from(chirps).orderBy(asc(chirps.createdAt));
 }
 //
-export async function getChirp(chirpId: string) {
-    const results = await db
+export async function getChirp(id: string) {
+    const rows = await db
         .select()
         .from(chirps)
-        .where(eq(chirps.id, chirpId));
+        .where(eq(chirps.id, id));
     //
-    return firstOrUndefined(results)
+    return firstOrUndefined(rows)
 }

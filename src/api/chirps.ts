@@ -69,11 +69,16 @@ export async function handlerChirpsIndex(_: Request, res: Response) {
 }
 //
 export async function handlerChirpsShow(req: Request, res: Response) {
+    const { chirpId } = req.params;
     try {
-        const chirpId = req.params.chirpId.toString();
-        const chirp = await getChirp(chirpId);
-        return respondWithJSON(res, 200, chirp);
+        const chirp = await getChirp(chirpId.toString());
+        if (!chirp) {
+            throw new NotFoundError(`Chirp with chirpId: ${chirpId} not found`);
+        }
+        respondWithJSON(res, 200, chirp);
+        return;
     } catch (err) {
-        return respondWithError(res, 404, "Chirp not found");
+        respondWithError(res, 404, "Chirp not found");
+        return;
     }
 }

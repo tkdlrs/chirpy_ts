@@ -42,11 +42,11 @@ app.post("/api/users", (req, res, next) => {
 app.post("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerChirpsCreate(req, res)).catch(next);
 });
-app.get("/api/chirps/:chirpId", (req, res, next) => {
-    Promise.resolve(handlerChirpsShow(req, res)).catch(next);
-});
 app.get("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerChirpsIndex(req, res)).catch(next);
+});
+app.get("/api/chirps/:chirpId", (req, res, next) => {
+    Promise.resolve(handlerChirpsShow(req, res)).catch(next);
 });
 
 /* Admin */
