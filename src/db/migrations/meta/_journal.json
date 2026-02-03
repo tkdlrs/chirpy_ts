@@ -15,6 +15,13 @@
       "when": 1769881981606,
       "tag": "0001_legal_the_anarchist",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1770088857998,
+      "tag": "0002_dear_bishop",
+      "breakpoints": true
     }
   ]
 }
