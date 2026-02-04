@@ -10,7 +10,7 @@
     "dev": "npx tsc && node dist/index.js",
     "generate": "drizzle-kit generate",
     "migrate": "drizzle-kit migrate",
-    "test": "npx tsc && node dist/tests/profanefilter.test.js"
+    "test": "vitest --run"
   },
   "keywords": [],
   "author": "",
@@ -19,12 +19,15 @@
     "argon2": "^0.44.0",
     "drizzle-orm": "^0.45.1",
     "express": "^5.2.1",
+    "jsonwebtoken": "^9.0.3",
     "postgres": "^3.4.8"
   },
   "devDependencies": {
     "@types/express": "^5.0.6",
+    "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^25.0.9",
     "drizzle-kit": "^0.31.8",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.18"
   }
 }
