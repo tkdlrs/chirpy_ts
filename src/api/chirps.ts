@@ -3,34 +3,30 @@ import type { Request, Response } from "express";
 import { respondWithError, respondWithJSON } from "./json.js";
 import { createChirp, getChirp, getChirps } from "../db/queries/chirps.js";
 import { BadRequestError, NotFoundError } from "./errors.js";
+import { getBearerToken, validateJWT } from "../auth.js";
+import { config } from "../config.js";
 //
 export async function handlerChirpsCreate(req: Request, res: Response) {
     type parameters = {
         body: string;
-        userId: string;
     }
     //
     const params: parameters = req.body;
-    const cleaned = validateChirp(params.body);
-    if (!params.body || !params.userId) {
+    // Check/confirm the user is who they say they are
+    const token = getBearerToken(req);
+    const userId = validateJWT(token, config.jwt.secret);
+    //
+    if (!params.body) {
         throw new BadRequestError("Missing required fields");
     }
     //
-    const chirp = await createChirp({
-        body: cleaned,
-        userId: params.userId
-    })
+    const cleaned = validateChirp(params.body);
+    const chirp = await createChirp({ body: cleaned, userId: userId });
     if (!chirp) {
         throw new Error("Couldn't create chirp");
     }
     //
-    respondWithJSON(res, 201, {
-        id: chirp.id,
-        createdAt: chirp.createdAt,
-        updatedAt: chirp.updatedAt,
-        body: chirp.body,
-        userId: chirp.userId,
-    });
+    respondWithJSON(res, 201, chirp);
 }
 //
 export function validateChirp(body: string) {

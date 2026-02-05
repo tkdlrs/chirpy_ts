@@ -3,6 +3,7 @@ import type { MigrationConfig } from "drizzle-orm/migrator";
 type Config = {
     api: APIConfig;
     db: DBConfig;
+    jwt: JWTConfig;
 };
 //
 type APIConfig = {
@@ -15,6 +16,12 @@ type DBConfig = {
     url: string;
     migrationConfig: MigrationConfig;
 };
+//
+type JWTConfig = {
+    defaultDuration: number;
+    secret: string;
+    issuer: string;
+}
 //
 process.loadEnvFile();
 //
@@ -39,6 +46,11 @@ export const config: Config = {
     db: {
         url: envOrThrow("DB_URL"),
         migrationConfig: migrationConfig,
+    },
+    jwt: {
+        defaultDuration: 60 * 60, // 1 hour in seconds
+        secret: envOrThrow("JWT_SECRET"),
+        issuer: "chirpy",
     },
 };
 //
