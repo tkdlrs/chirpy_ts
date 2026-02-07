@@ -22,6 +22,13 @@
       "when": 1770088857998,
       "tag": "0002_dear_bishop",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1770433087498,
+      "tag": "0003_absurd_kang",
+      "breakpoints": true
     }
   ]
 }

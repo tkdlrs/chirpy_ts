@@ -6,6 +6,9 @@ import { BadRequestError, UserNotAuthenticatedError } from "./api/errors.js";
 //
 import type { Request } from "express";
 //
+import { randomBytes } from "node:crypto";
+import { createRefreshToken } from "./db/queries/refreshToken.js";
+//
 const TOKEN_ISSUER = "chirpy";
 //
 export async function hashPassword(password: string) {
@@ -77,3 +80,12 @@ export function extractBearerToken(header: string) {
     return splitAuth[1];
 }
 //
+export async function makeRefreshToken(userId: string) {
+    const token = randomBytes(32).toString("hex");
+    const expiresAt = new Date();
+    expiresAt.setDate(expiresAt.getDate() + 60);
+    //
+    await createRefreshToken({ token, userId, expiresAt });
+    //
+    return token;
+}

@@ -1,5 +1,5 @@
 import { getUserByEmail } from "../db/queries/users.js";
-import { checkPasswordHash, makeJWT } from "../auth.js";
+import { checkPasswordHash, makeJWT, makeRefreshToken } from "../auth.js";
 import { respondWithJSON } from "./json.js";
 import { UserNotAuthenticatedError } from "./errors.js";
 //
@@ -10,13 +10,15 @@ import { config } from "../config.js";
 //
 type LoginResponse = UserResponse & {
     token: string;
+    refreshToken: string;
 }
 //
 export async function handlerLogin(req: Request, res: Response) {
     type parameters = {
         password: string;
         email: string;
-        expiresIn?: number;
+        token: string;
+        refreshToken: string;
     };
     //
     const params: parameters = req.body;
@@ -31,11 +33,13 @@ export async function handlerLogin(req: Request, res: Response) {
         throw new UserNotAuthenticatedError("incorrect email or password")
     }
     //
-    let duration = config.jwt.defaultDuration;
-    if (params.expiresIn && !(params.expiresIn > config.jwt.defaultDuration)) {
-        duration = params.expiresIn;
-    }
+    const duration = config.jwt.defaultDuration;
+    // if (params.expiresIn && !(params.expiresIn > config.jwt.defaultDuration)) {
+    //     duration = params.expiresIn;
+    // }
     const accessToken = makeJWT(user.id, duration, config.jwt.secret);
+    const refreshToken = await makeRefreshToken(user.id);
+
     //
     respondWithJSON(res, 200, {
         id: user.id,
@@ -43,6 +47,7 @@ export async function handlerLogin(req: Request, res: Response) {
         updatedAt: user.updatedAt,
         email: user.email,
         token: accessToken,
+        refreshToken,
     } satisfies LoginResponse);
 };
 
