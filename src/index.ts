@@ -15,10 +15,9 @@ import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import { handlerChirpsCreate, handlerChirpsIndex, handlerChirpsShow } from "./api/chirps.js";
 import { handlerUsersCreate } from "./api/users.js";
-import { handlerLogin } from "./api/auth.js";
+import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 //
 import { config } from "./config.js";
-import { handlerRefresh, handlerRevoke } from "./api/refresh.js";
 //
 const migrationClient = postgres(config.db.url, { max: 1 });
 await migrate(drizzle(migrationClient), config.db.migrationConfig);
