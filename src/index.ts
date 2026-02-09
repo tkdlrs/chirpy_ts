@@ -14,7 +14,7 @@ import { handlerReadiness } from "./api/readiness.js";
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import { handlerChirpsCreate, handlerChirpsIndex, handlerChirpsShow } from "./api/chirps.js";
-import { handlerUsersCreate } from "./api/users.js";
+import { handlerUsersCreate, handlerUsersEdit } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 //
 import { config } from "./config.js";
@@ -38,6 +38,9 @@ app.get("/api/healthz", (req, res, next) => {
 // Users
 app.post("/api/users", (req, res, next) => {
     Promise.resolve(handlerUsersCreate(req, res)).catch(next);
+})
+app.put("/api/users", (req, res, next) => {
+    Promise.resolve(handlerUsersEdit(req, res)).catch(next);
 })
 app.post("/api/login", (req, res, next) => {
     Promise.resolve(handlerLogin(req, res)).catch(next);
