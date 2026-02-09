@@ -13,7 +13,7 @@ export const users = pgTable("users", {
         .default('unset'),
 });
 export type NewUser = typeof users.$inferInsert;
-export type User = typeof users.$inferSelect;
+
 //
 export const chirps = pgTable("chirps", {
     id: uuid("id").primaryKey().defaultRandom(),

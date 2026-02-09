@@ -1,6 +1,6 @@
 import { eq } from 'drizzle-orm';
 import { db } from "../index.js";
-import { NewUser, User, users } from "../schema.js";
+import { NewUser, users } from "../schema.js";
 //
 export async function createUser(user: NewUser) {
     const [result] = await db
@@ -27,13 +27,18 @@ export async function getUserByEmail(email: string) {
     return result;
 }
 //
-export async function updateUser(userID: string, newInfo: NewUser) {
+export async function updateUser(
+    id: string,
+    email: string,
+    hashedPassword: string,
+) {
     const [result] = await db
         .update(users)
-        .set(newInfo)
-        .where(
-            eq(users.id, userID)
-        )
+        .set({
+            email,
+            hashedPassword,
+        })
+        .where(eq(users.id, id))
         .returning();
     //
     return result;

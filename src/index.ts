@@ -14,7 +14,7 @@ import { handlerReadiness } from "./api/readiness.js";
 import { handlerMetrics } from "./api/metrics.js";
 import { handlerReset } from "./api/reset.js";
 import { handlerChirpsCreate, handlerChirpsIndex, handlerChirpsShow } from "./api/chirps.js";
-import { handlerUsersCreate, handlerUsersEdit } from "./api/users.js";
+import { handlerUsersCreate, handlerUsersUpdate } from "./api/users.js";
 import { handlerLogin, handlerRefresh, handlerRevoke } from "./api/auth.js";
 //
 import { config } from "./config.js";
@@ -40,7 +40,7 @@ app.post("/api/users", (req, res, next) => {
     Promise.resolve(handlerUsersCreate(req, res)).catch(next);
 })
 app.put("/api/users", (req, res, next) => {
-    Promise.resolve(handlerUsersEdit(req, res)).catch(next);
+    Promise.resolve(handlerUsersUpdate(req, res)).catch(next);
 })
 app.post("/api/login", (req, res, next) => {
     Promise.resolve(handlerLogin(req, res)).catch(next);
