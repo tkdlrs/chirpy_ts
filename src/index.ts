@@ -64,11 +64,11 @@ app.post("/api/chirps", (req, res, next) => {
 app.get("/api/chirps", (req, res, next) => {
     Promise.resolve(handlerChirpsIndex(req, res)).catch(next);
 });
-app.delete("/api/chirps/:chirpId", (req, res, next) => {
-    Promise.resolve(handlerChirpsDelete(req, res)).catch(next);
-});
 app.get("/api/chirps/:chirpId", (req, res, next) => {
     Promise.resolve(handlerChirpsShow(req, res)).catch(next);
+});
+app.delete("/api/chirps/:chirpId", (req, res, next) => {
+    Promise.resolve(handlerChirpsDelete(req, res)).catch(next);
 });
 
 /* Admin */

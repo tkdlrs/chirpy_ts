@@ -1,8 +1,17 @@
 import type { Request, Response } from "express";
 //
 import { respondWithError, respondWithJSON } from "./json.js";
-import { createChirp, deleteChirp, getChirp, getChirps } from "../db/queries/chirps.js";
-import { BadRequestError, NotFoundError } from "./errors.js";
+import {
+    createChirp,
+    deleteChirp,
+    getChirp,
+    getChirps
+} from "../db/queries/chirps.js";
+import {
+    BadRequestError,
+    NotFoundError,
+    UserForbiddenError
+} from "./errors.js";
 import { getBearerToken, validateJWT } from "../auth.js";
 import { config } from "../config.js";
 //
@@ -82,35 +91,23 @@ export async function handlerChirpsShow(req: Request, res: Response) {
 export async function handlerChirpsDelete(req: Request, res: Response) {
     let { chirpId } = req.params;
     chirpId = chirpId.toString();
-    if (!chirpId) {
-        throw new Error("Invalid chirp id")
-    }
-    // determine if is the user who made the chirp
+    //
     const token = getBearerToken(req);
     const userId = validateJWT(token, config.jwt.secret);
-    if (!userId) {
-        res.status(403).send();
-        return;
-    }
     //
     const chirp = await getChirp(chirpId);
     if (!chirp) {
-        respondWithError(res, 404, "Chirp not found????????")
-        return;
-    }
-    // authorization check
-    if (chirp.userId != userId) {
-        respondWithError(res, 403, "User not authorized to delete this chirp")
-        return;
+        throw new NotFoundError(`Chirp with chirpId: ${chirpId} not found`);
     }
     //
-    try {
-        await deleteChirp(chirpId, userId);
-        res.status(204).send();
-        return;
-    } catch (err) {
-        respondWithError(res, 404, "Chirp not found")
-        return;
+    if (chirp.userId !== userId) {
+        throw new UserForbiddenError("You can't delete this chirp");
     }
     //
+    const deleted = await deleteChirp(chirpId, userId);
+    if (!deleted) {
+        throw new Error(`Failed to delete chirp with chirpId: ${chirpId}`);
+    }
+    //
+    res.status(204).send();
 }

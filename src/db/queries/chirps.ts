@@ -25,12 +25,14 @@ export async function getChirp(id: string) {
 }
 //
 export async function deleteChirp(chirpID: string, userID: string) {
-    return db
+    const rows = await db
         .delete(chirps)
         .where(
             and(
                 eq(chirps.id, chirpID),
                 eq(chirps.userId, userID)
             )
-        );
+        ).returning();
+    //
+    return rows.length > 0;
 }
