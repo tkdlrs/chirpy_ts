@@ -56,9 +56,10 @@ export async function handlerLogin(req: Request, res: Response) {
     //
     respondWithJSON(res, 200, {
         id: user.id,
+        email: user.email,
         createdAt: user.createdAt,
         updatedAt: user.updatedAt,
-        email: user.email,
+        isChirpyRed: user.isChirpyRed,
         token: accessToken,
         refreshToken: refreshToken,
     } satisfies LoginResponse);
