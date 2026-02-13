@@ -1,7 +1,19 @@
 import type { Request, Response } from "express";
 import { upgradeChirpyRed } from "../db/queries/users.js";
+import { getAPIKey } from "../auth.js";
+import { config } from "../config.js";
 //
 export async function handlerWebhook(req: Request, res: Response) {
+    const apiKey = getAPIKey(req);
+    if (!apiKey) {
+        res.status(401).send();
+        return;
+    }
+    if (apiKey !== config.api.polkaKey) {
+        res.status(401).send();
+        return;
+    }
+    //
     type parameters = {
         event: string;
         data: {
