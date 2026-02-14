@@ -6,7 +6,6 @@ import {
     deleteChirp,
     getChirp,
     getChirps,
-    getChirpsByAuthor
 } from "../db/queries/chirps.js";
 import {
     BadRequestError,
@@ -72,21 +71,8 @@ export async function handlerChirpsIndex(req: Request, res: Response) {
         authorId = authorIdQuery;
     }
     //
-    if (authorId !== "") {
-        try {
-            const chirps = await getChirpsByAuthor(authorId);
-            return respondWithJSON(res, 200, chirps);
-        } catch (err) {
-            throw new Error("Issue getting chirps from this author.")
-        }
-    }
-    //
-    try {
-        const chirps = await getChirps();
-        return respondWithJSON(res, 200, chirps);
-    } catch (err) {
-        throw new Error("Issue getting chirps")
-    }
+    const chirps = await getChirps(authorId);
+    respondWithJSON(res, 200, chirps);
 }
 //
 export async function handlerChirpsShow(req: Request, res: Response) {
