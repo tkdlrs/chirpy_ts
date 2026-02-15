@@ -14,6 +14,7 @@ import {
 } from "./errors.js";
 import { getBearerToken, validateJWT } from "../auth.js";
 import { config } from "../config.js";
+import { Chirp } from "src/db/schema.js";
 //
 export async function handlerChirpsCreate(req: Request, res: Response) {
     type parameters = {
@@ -71,8 +72,38 @@ export async function handlerChirpsIndex(req: Request, res: Response) {
         authorId = authorIdQuery;
     }
     //
+    type Sort = "asc" | "desc";
+    let sort: Sort = "asc";
+    let sortQuery = req.query.sort;
+    if (typeof sortQuery === "string") {
+        if (sortQuery === "desc") {
+            sort = sortQuery;
+        } else if (sortQuery === "asc") {
+            sort = sortQuery;
+        }
+    }
+    //
     const chirps = await getChirps(authorId);
-    respondWithJSON(res, 200, chirps);
+    //
+    const sortedChirps = chirps.sort((a: Chirp, b: Chirp) => {
+        const A = new Date(a.createdAt).getTime();
+        const B = new Date(b.createdAt).getTime();
+        //
+        if (sort === "asc") {
+            if (A > B) return 1;
+            if (A < B) return -1;
+            return 0;
+        } else if (sort === "desc") {
+            if (A < B) return 1;
+            if (A > B) return -1;
+            return 0;
+        } else {
+            throw new Error("sorting went wrong")
+        };
+        //
+    })
+    //
+    respondWithJSON(res, 200, sortedChirps);
 }
 //
 export async function handlerChirpsShow(req: Request, res: Response) {
