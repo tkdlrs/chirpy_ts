@@ -72,38 +72,20 @@ export async function handlerChirpsIndex(req: Request, res: Response) {
         authorId = authorIdQuery;
     }
     //
-    type Sort = "asc" | "desc";
-    let sort: Sort = "asc";
-    let sortQuery = req.query.sort;
-    if (typeof sortQuery === "string") {
-        if (sortQuery === "desc") {
-            sort = sortQuery;
-        } else if (sortQuery === "asc") {
-            sort = sortQuery;
-        }
-    }
-    //
     const chirps = await getChirps(authorId);
     //
-    const sortedChirps = chirps.sort((a: Chirp, b: Chirp) => {
-        const A = new Date(a.createdAt).getTime();
-        const B = new Date(b.createdAt).getTime();
-        //
-        if (sort === "asc") {
-            if (A > B) return 1;
-            if (A < B) return -1;
-            return 0;
-        } else if (sort === "desc") {
-            if (A < B) return 1;
-            if (A > B) return -1;
-            return 0;
-        } else {
-            throw new Error("sorting went wrong")
-        };
-        //
-    })
+    let sortDirection = "asc";
+    let sortDirectionParam = req.query.sort;
+    if (sortDirectionParam === "desc") {
+        sortDirection = "desc";
+    };
     //
-    respondWithJSON(res, 200, sortedChirps);
+    chirps.sort((a, b) => (sortDirection === "asc")
+        ? a.createdAt.getTime() - b.createdAt.getTime()
+        : b.createdAt.getTime() - a.createdAt.getTime(),
+    );
+    //
+    respondWithJSON(res, 200, chirps);
 }
 //
 export async function handlerChirpsShow(req: Request, res: Response) {
